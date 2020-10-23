@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.MealTo;
 import ru.javawebinar.topjava.repository.InMemoryMealRepository;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -15,6 +16,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -40,6 +43,7 @@ public class MealServlet extends HttpServlet {
                 int id = getId(request);
                 log.info("Delete {}", id);
                 repository.delete(id);
+                response.sendRedirect("meals");
                 break;
             case "create":
             case "update":
@@ -55,7 +59,7 @@ public class MealServlet extends HttpServlet {
               /*  request.setAttribute("meals",
                         MealsUtil.getTos(repository.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
                */
-                request.setAttribute("meals", MealsUtil.filteredByStreams(MEAL_LIST, LocalTime.MIN, LocalTime.MAX, 2000));
+                request.setAttribute("meals", MealsUtil.filteredByStreams(new ArrayList(repository.getAll()), LocalTime.MIN, LocalTime.MAX, 2000));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
